@@ -43,7 +43,20 @@ if [ ! -z "$KEYSERVER" ] && [ ! -z "$URI" ]
 then
     GPG_KEY_ID=$(gpg -K --with-colons | head -1 | cut -d: -f5)
 
-    cat > /repo/go <<-END
+    echo "# setup script for $URI" > /repo/go
+
+    case "$URI" in
+        https://*)
+            cat >> /repo/go <<-END
+if [ ! -e /usr/lib/apt/methods/https ]
+then
+    apt-get update
+    apt-get install -y apt-transport-https
+fi
+END
+    esac
+
+    cat >> /repo/go <<-END
 apt-key adv --keyserver $KEYSERVER --recv-keys $GPG_KEY_ID
 echo "deb $URI $APTLY_DISTRIBUTION $APTLY_COMPONENT" >> /etc/apt/sources.list
 
