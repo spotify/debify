@@ -48,7 +48,8 @@ mv ~/.aptly/public /repo
 
 if [ ! -z "$KEYSERVER" ] && [ ! -z "$URI" ]
 then
-    GPG_KEY_ID=$(gpg -K --with-colons | head -1 | cut -d: -f5)
+    release_sig_path=$(find /repo/dists -name Release.gpg | head -1) 
+    gpg_key_id=$(gpg --list-packets $release_sig_path | grep -oP "(?<=keyid ).+")
 
     echo "# setup script for $URI" > /repo/go
 
@@ -64,7 +65,7 @@ END
     esac
 
     cat >> /repo/go <<-END
-apt-key adv --keyserver $KEYSERVER --recv-keys $GPG_KEY_ID
+apt-key adv --keyserver $KEYSERVER --recv-keys $gpg_key_id
 echo "deb $URI $APTLY_DISTRIBUTION $APTLY_COMPONENT" >> /etc/apt/sources.list
 
 apt-get update
