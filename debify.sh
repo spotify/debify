@@ -31,10 +31,17 @@ aptly repo add $APTLY_REPO_NAME /debs/
 
 aptly repo show $APTLY_REPO_NAME
 
+if [ ! -z "$GPG_PASSPHRASE" ]
+then
+    passphrase="$GPG_PASSPHRASE"
+elif [ ! -z "$GPG_PASSPHRASE_FILE" ]
+then
+    passphrase=$(<$GPG_PASSPHRASE_FILE)
+fi
+
 aptly publish repo \
     -architectures="$APTLY_ARCHITECTURES" \
-    -passphrase="$GPG_PASSPHRASE" \
-    -passphrase-file="$GPG_PASSPHRASE_FILE" \
+    -passphrase="$passphrase" \
     $APTLY_REPO_NAME
 
 mv ~/.aptly/public /repo
