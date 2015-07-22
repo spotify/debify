@@ -27,7 +27,7 @@ http://example.com/apt:
                  -e KEYSERVER=keyserver.ubuntu.com \
                  -v ~/.gnupg:/.gnupg \
                  -v ~/my-debs:/debs \
-                 rohan/debify
+                 spotify/debify
 
 Serving
 ---
